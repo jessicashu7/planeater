@@ -15,19 +15,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
     <!-- Function to total the amount of units, possibly move to its own separate Javascript file later-->
-    <script>
-
-
-      function total_units_quarter(){
-          var array = document.getElementsByName("num_units");
-          var total = 0;
-          for(var i = 0; i<array.length; i++){
-              total+=Number(array[i].value);
-          }
-          document.getElementById("total_fall_quarter").innerHTML= "Total Units: " + total;
-      }
-
-      </script>
+    <script src="index.js"></script>
 
   </head>
 

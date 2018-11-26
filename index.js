@@ -5,4 +5,15 @@ function total_quarter_units(quarter){
       total+=Number(units[i].value);
   }
   quarter.querySelector("div.total_quarter_units").innerHTML= "Total Units: " + total;
+  total_units()
+}
+
+function total_units(){
+  var units = document.querySelectorAll("input.units")
+  var total = 0;
+  for(var i = 0; i<units.length; i++){
+      total+=Number(units[i].value);
+  }
+  document.getElementById("total_units").innerHTML= "Total Units: " + total;
+
 }

@@ -43,33 +43,52 @@
     <div class="container-fluid">
 
       <div class = "row" >
-
         <h4 class="col-sm">Year 1</h4>
         <h5 class = "col-sm"> Total Number of Units: </h5>
-
-
       </div>
 
+      <!-- YEAR 1 -->
       <div class="row border mx-1">
-          <div class="col-3" id = "fall_quarter" style="background-color:white">
+          <div class="col-3" id = "fall_quarter_year1" style="background-color:white">
             <h6>Fall</h6>
             <div class="input-group mb-1">
               <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-               <input type="number" min="0" max="8" step="1" class="form-control form-control-sm w-25" placeholder="units" name ="num_units" onblur = "total_units_quarter()">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
             </div>
             <div class="input-group mb-1">
               <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="form-control form-control-sm w-25" placeholder="units" name ="num_units"  onblur = "total_units_quarter()">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
             </div>
             <div class="input-group mb-1">
               <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="form-control form-control-sm w-25" placeholder="units" name ="num_units"  onblur = "total_units_quarter()">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
             </div>
             <div class="input-group mb-1">
               <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="form-control form-control-sm w-25" placeholder="units" name ="num_units"  onblur = "total_units_quarter()">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
             </div>
-              <div class="float-right" id = "total_fall_quarter"> Total Units: 0 </div>
+            <div class="total_quarter_units float-right" id = "total_fall_quarter_year1"> Total Units: 0 </div>
+          </div>
+
+          <div class="col-3" id = "winter_quarter_year1" style="background-color:white">
+            <h6>Winter</h6>
+            <div class="input-group mb-1">
+              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
+            </div>
+            <div class="input-group mb-1">
+              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
+            </div>
+            <div class="input-group mb-1">
+              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
+            </div>
+            <div class="input-group mb-1">
+              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" onblur = "total_quarter_units(this.parentElement.parentElement)">
+            </div>
+            <div class="total_quarter_units float-right" id = "total_winter_quarter_year1"> Total Units: 0 </div>
           </div>
       </div>
 

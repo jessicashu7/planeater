@@ -1,3 +1,16 @@
+function check_units(units){
+  if (units.value.length > 1){
+    units.value = units.value.slice(0,1)
+  }
+  if (units.value < 0){
+    units.value = 0
+  }
+  else if (units.value > 8){
+    units.value = 8
+  }
+  total_quarter_units(units.parentElement.parentElement)
+}
+
 function total_quarter_units(quarter){
   var units = quarter.querySelectorAll("input.units");
   var total = 0;
@@ -15,5 +28,4 @@ function total_units(){
       total+=Number(units[i].value);
   }
   document.getElementById("total_units").innerHTML= "Total Units: " + total;
-
 }

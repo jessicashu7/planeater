@@ -1,6 +1,6 @@
 function check_units(units){
-  if (units.value.length > 1){
-    units.value = units.value.slice(0,1)
+  if (units.value.length > 3){
+    units.value = units.value.slice(0,3)
   }
   if (units.value < 0){
     units.value = 0

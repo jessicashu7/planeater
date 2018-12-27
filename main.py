@@ -4,7 +4,7 @@ from flask import Flask, render_template, url_for, redirect, flash
 
 
 app = Flask(__name__)
-#app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
+app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #using sqlite for easier testing and implementation, can switch later
 #db = SQLAlchemy(app)
 

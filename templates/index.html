@@ -41,187 +41,37 @@
     <div class="container-fluid">
       <p id="total_units" class = "float-right"> Total Number of Units: 0</p>
 
-      <!-- YEAR 1 -->
-      <div class = "row" >
-        <h4 class="col">Year 1</h4>
-      </div>
+      <!-- YEAR -->
+      {% for year in years %}
+        <div class = "row mt-3" >
+          <h4 class="col">Year {{ year }}</h4>
+        </div>
 
-      <div class="row border mx-1 my-1">
-          <div class="col-sm-3" id = "fall_quarter_year1" style="background-color:white">
-            <h6>Fall</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+        <div class="row border mx-1 my-1">
+          {% for quarter in quarters %}
+            <div class="col-sm-3" style="background-color:white">
+              <h6>{{ quarter }}</h6>
+              <div class="input-group mb-1">
+                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
+                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+              </div>
+              <div class="input-group mb-1">
+                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+              </div>
+              <div class="input-group mb-1">
+                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+              </div>
+              <div class="input-group mb-1">
+                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
+                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+              </div>
+              <div class="total_quarter_units float-right"> Total Units: 0 </div>
             </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_fall_quarter_year1"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "winter_quarter_year1" style="background-color:white">
-            <h6>Winter</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_winter_quarter_year1"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "spring_quarter_year1" style="background-color:white">
-            <h6>Spring</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_spring_quarter_year1"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "summer_quarter_year1" style="background-color:white">
-            <h6>Summer</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_summer_quarter_year1"> Total Units: 0 </div>
-          </div>
-      </div>
-
-      <!-- YEAR 2 -->
-      <div class = "row" >
-        <h4 class="col">Year 2</h4>
-      </div>
-
-      <div class="row border mx-1 my-1">
-          <div class="col-sm-3" id = "fall_quarter_year2" style="background-color:white">
-            <h6>Fall</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_fall_quarter_year2"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "winter_quarter_year2" style="background-color:white">
-            <h6>Winter</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_winter_quarter_year2"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "spring_quarter_year2" style="background-color:white">
-            <h6>Spring</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_spring_quarter_year2"> Total Units: 0 </div>
-          </div>
-
-          <div class="col-sm-3" id = "summer_quarter_year2" style="background-color:white">
-            <h6>Summer</h6>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="input-group mb-1">
-              <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-              <input type="number" min="0" max="8" step="1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-            </div>
-            <div class="total_quarter_units float-right" id = "total_summer_quarter_year2"> Total Units: 0 </div>
-          </div>
-      </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
 
     </div>
   </body>

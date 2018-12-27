@@ -11,6 +11,6 @@ class Class(db.Model):
 
 class User(db.Model):
     #structure of the User Database
-
+    classes = db.relationship('Class', backref = '', lazy = True)
     def __repr__(self):
         return f"User('')"

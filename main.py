@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for,redirect, flash
-from flask_sqlalchemy import SQLAlchemy #need to install flask-sqlalchemy
+from flask import Flask, render_template, url_for, redirect, flash
+#from flask_sqlalchemy import SQLAlchemy #need to install flask-sqlalchemy
+#from flask.ext.mysql import MySQL
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #using sqlite for easier testing and implementation, can switch later
-db = SQLAlchemy(app)
+#app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #using sqlite for easier testing and implementation, can switch later
+#db = SQLAlchemy(app)
 
 
 
@@ -20,8 +21,8 @@ def main():
 
 @app.route('/save')
 def save():
-
     #saving data to database here
+
 
     flash("Your 4 year plan has been successfully saved", 'success')
 

@@ -17,6 +17,7 @@ function total_quarter_units(quarter){
   for(var i = 0; i<units.length; i++){
       total+=Number(units[i].value);
   }
+  total = total.toFixed(1)
   quarter.querySelector("div.total_quarter_units").innerHTML= "Total Units: " + total;
   total_units()
 }
@@ -27,5 +28,6 @@ function total_units(){
   for(var i = 0; i<units.length; i++){
       total+=Number(units[i].value);
   }
+  total = total.toFixed(1);
   document.getElementById("total_units").innerHTML= "Total Units: " + total;
 }

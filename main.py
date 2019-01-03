@@ -12,13 +12,23 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql = MySQL()
 mysql.init_app(app)
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods = ['GET'])
 def main():
     #the following lists are used for now to get templating to work
     #they will be removed later once we get actual database data
     #the looping in index.html will need to change also
     years = [1,2,3,4]
     quarters = ["Fall", "Winter", "Spring", "Summer"]
+#    conn = mysql.connect()
+#    cursor = conn.cursor()
+#    statement = 'SELECT * FROM inputclass'
+#    cursor.execute('SELECT * FROM inputclass')
+#    posts = cursor.fetchall()
+#    for p in posts:
+#        print(p)
+#        print(type(p))
+
+
     return render_template('index.html', years=years, quarters=quarters)
 
 @app.route('/save', methods=['POST'])
@@ -30,20 +40,16 @@ def save():
     quarters = ["Fall", "Winter", "Spring", "Summer"]
     for y in years:
         for q in quarters:
-            yq = request.form[str(y) + "_" + q]
-            yqu = request.form[str(y) + "_" + q + "_units"]
-            print(type(yq))
-            print("name: " + yq)
-            print("is none: " + str(yq == "") )
-            print(type(yqu))
-            print("units: "+ yqu)
-            print("is none: " + str(yqu == "") )
-            if yq != "" or yqu !="":
-                statement = "INSERT INTO class (name, units) VALUES ({}, {});".format((("'{}'".format(yq)) if yq != "" else "NULL"), (float(yqu) if yqu != "" else "NULL"))
+            name = request.form[str(y) + "_" + q]
+            units = request.form[str(y) + "_" + q + "_units"]
+            if name != "" or units !="": #if both fields blank, no need to insert in database
+                #format statement puts in name and units (NULL if nothing entered in field)
+                name = (("'{}'".format(name)) if name != "" else "NULL")
+                units = (float(units) if units != "" else "NULL")
+                statement = "INSERT INTO inputclass VALUES (1, '{}', '{}', {}, {}) ON DUPLICATE KEY UPDATE name={}, units={};".format(y,q,name, units, name, units)
                 cursor.execute(statement)
                 conn.commit()
                 flash("Your 4 year plan has been successfully saved", 'success')
-
 
     #returning to login page
     return redirect(url_for('main'));

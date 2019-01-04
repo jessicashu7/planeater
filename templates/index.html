@@ -55,33 +55,34 @@
       <!-- YEAR -->
       <!-- temporary until database is implemented -->
       <!-- Need to loop classes, as can have more than 4 classes -->
-      {% for year in years %}
+      {% for year, quarters in plan|dictsort %}
         <div class = "row mt-3" >
           <h4 class="col">Year {{ year }}</h4>
+          <h4 class="col"></h4>
         </div>
 
         <div class="row border mx-1 my-1">
-          {% for quarter in quarters %}
+          {% for quarter, classes in quarters|dictsort %}
             <div class="col-sm-6 col-md-3" style="background-color:white">
+              {% if quarter == 0 %}
+                {% set quarter = 'Fall' %}
+              {% elif quarter == 1 %}
+                {% set quarter = 'Winter' %}
+              {% elif quarter == 2 %}
+                {% set quarter = 'Spring' %}
+              {% else %}
+                {% set quarter = 'Summer' %}
+              {% endif %}
               <h6>{{ quarter }}</h6>
+
+              {% for name, units in classes %}
               <div class="input-group mb-1">
-                <input name="{{ year|string + '_' + quarter }}" type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" >
-                <input name="{{ year|string + '_' + quarter + '_units' }}" type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
+                <input name="{{ year|string + '_' + quarter }}" type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" value="{% if name != "" %}{{name}}{% endif %}">
+                <input name="{{ year|string + '_' + quarter + '_units' }}" type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)" value="{% if units != -1 %}{{units}}{% endif %}">
               </div>
-            <!--  <div class="input-group mb-1">
-                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-              </div>
-              <div class="input-group mb-1">
-                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-              </div>
-              <div class="input-group mb-1">
-                <input type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class">
-                <input type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)">
-              </div>
+              {% endfor %}
               <div class="total_quarter_units float-right"> Total Units: 0 </div>
-            -->
+
             </div>
           {% endfor %}
         </div>

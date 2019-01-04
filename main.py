@@ -17,19 +17,38 @@ def main():
     #the following lists are used for now to get templating to work
     #they will be removed later once we get actual database data
     #the looping in index.html will need to change also
-    years = [1,2,3,4]
-    quarters = ["Fall", "Winter", "Spring", "Summer"]
-#    conn = mysql.connect()
-#    cursor = conn.cursor()
-#    statement = 'SELECT * FROM inputclass'
-#    cursor.execute('SELECT * FROM inputclass')
-#    posts = cursor.fetchall()
-#    for p in posts:
-#        print(p)
-#        print(type(p))
+    plan = {
+        1 : {
+                0 : [("",-1),("",-1),("",-1),("",-1)],
+                1 : [("",-1),("",-1),("",-1),("",-1)],
+                2 : [("",-1),("",-1),("",-1),("",-1)],
+                3 : [("",-1),("",-1),("",-1),("",-1)]
+            },
+        2 : {
+                0 : [("",-1),("",-1),("",-1),("",-1)],
+                1 : [("",-1),("",-1),("",-1),("",-1)],
+                2 : [("",-1),("",-1),("",-1),("",-1)],
+                3 : [("",-1),("",-1),("",-1),("",-1)]
+            },
+        3 : {
+                0 : [("",-1),("",-1),("",-1),("",-1)],
+                1 : [("",-1),("",-1),("",-1),("",-1)],
+                2 : [("",-1),("",-1),("",-1),("",-1)],
+                3 : [("",-1),("",-1),("",-1),("",-1)]
+            },
+        4 : {
+                0 : [("",-1),("",-1),("",-1),("",-1)],
+                1 : [("",-1),("",-1),("",-1),("",-1)],
+                2 : [("",-1),("",-1),("",-1),("",-1)],
+                3 : [("",-1),("",-1),("",-1),("",-1)]
+            }
 
+    }
 
-    return render_template('index.html', years=years, quarters=quarters)
+    #conn = mysql.connect()
+    #cursor = conn.cursor()
+
+    return render_template('index.html', plan=plan)
 
 @app.route('/save', methods=['POST'])
 def save():
@@ -49,7 +68,8 @@ def save():
                 statement = "INSERT INTO inputclass VALUES (1, '{}', '{}', {}, {}) ON DUPLICATE KEY UPDATE name={}, units={};".format(y,q,name, units, name, units)
                 cursor.execute(statement)
                 conn.commit()
-                flash("Your 4 year plan has been successfully saved", 'success')
+    else:
+        flash("Your 4 year plan has been successfully saved", 'success')
 
     #returning to login page
     return redirect(url_for('main'));

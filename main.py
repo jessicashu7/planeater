@@ -1,9 +1,8 @@
-from flask import Flask, render_template, url_for, redirect, flash, request,g
+from flask import Flask, render_template, url_for, redirect, flash, request,session, jsonify
 from flaskext.mysql import MySQL
 from functools import wraps
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
-
-from flask_oauth2_login import GoogleLogin
+from flask_oauthlib.client import OAuth
 from auth import OAuthSignIn
 
 
@@ -14,73 +13,36 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'Lockdown1!'
 app.config['MYSQL_DATABASE_DB'] = 'planeater'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
-app.config.update(
-  SECRET_KEY="secret",
-  GOOGLE_LOGIN_REDIRECT_SCHEME="http",
-)
 
+app.config['GOOGLE_ID'] = "220365352452-1s6a4kaklt0hop8fnjfti0ojfl9hqgr5.apps.googleusercontent.com"
+app.config['GOOGLE_SECRET'] = "zXmfJl0CljOg-zEew41bLKi2" #currently Brian's test google project
 
-# for config in (
-#   "GOOGLE_LOGIN_CLIENT_ID",
-#   "GOOGLE_LOGIN_CLIENT_SECRET",
-# ):
-  # app.config[config] = os.environ[config]
-# google_login = GoogleLogin(app)
-# app.config.from_object('config')
-# app.secret_key = 'this is very secret'
-#
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = 'login'
-
-
+oauth = OAuth(app)
 mysql = MySQL()
 mysql.init_app(app)
-#oauth = OAuth(app)
 
+google = oauth.remote_app(
+    'google',
+    consumer_key=app.config.get('GOOGLE_ID'),
+    consumer_secret=app.config.get('GOOGLE_SECRET'),
+    request_token_params={
+        'scope': 'email'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
-# @login_manager.user_loader
-# def load_user(id):
-#     return User.find_by_id(id)
-#
-#
-# @app.route('/authorize/<provider>')
-# def oauth_authorize(provider):
-#     # Flask-Login function
-#     if not current_user.is_anonymous():
-#         return redirect(url_for('index'))
-#     oauth = OAuthSignIn.get_provider(provider)
-#     return oauth.authorize()
-#
-# @app.route('/callback/<provider>')
-# def oauth_callback(provider):
-#     if not current_user.is_anonymous():
-#         return redirect(url_for('index'))
-#     oauth = OAuthSignIn.get_provider(provider)
-#     username, email = oauth.callback()
-#
-#     if email is None:
-#         # I need a valid email address for my user identification
-#         flash('Authentication failed.')
-#         return redirect(url_for('index'))
-#
-#     # Look if the user already exists
-#     user = User.find_or_create_by_email(email)
-#
-#     # Log in the user, by default remembering them for their next visit
-#     # unless they log out.
-#     login_user(user, remember=True)
-#     return redirect(url_for('index'))
-#
-#
-# @app.route('/login', methods = ['POST', 'GET'])
-# def login():
-#     if current_user is not None and current_user.is_authenticated():
-#         user = User()
-#         login_user(user)
-#         return redirect(url_for('main'))
-#     return render_template('login.html',title='Sign In')
-#
+@app.route('/login')
+def login():
+    return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/logout')
+def logout():
+    session.pop('google_token', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/', methods = ['GET'])
@@ -91,37 +53,40 @@ def main():
     #quarter (represented in 0-3) to list of tuples of name, units
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are default values for name, units
-    plan = {
-        1 : {
-                1 : [("",-1),("",-1),("",-1),("",-1)],
-                2 : [("",-1),("",-1),("",-1),("",-1)],
-                3 : [("",-1),("",-1),("",-1),("",-1)],
-                4 : [("",-1),("",-1),("",-1),("",-1)]
-            },
-        2 : {
-                1 : [("",-1),("",-1),("",-1),("",-1)],
-                2 : [("",-1),("",-1),("",-1),("",-1)],
-                3 : [("",-1),("",-1),("",-1),("",-1)],
-                4 : [("",-1),("",-1),("",-1),("",-1)]
-            },
-        3 : {
-                1 : [("",-1),("",-1),("",-1),("",-1)],
-                2 : [("",-1),("",-1),("",-1),("",-1)],
-                3 : [("",-1),("",-1),("",-1),("",-1)],
-                4 : [("",-1),("",-1),("",-1),("",-1)]
-            },
-        4 : {
-                1 : [("",-1),("",-1),("",-1),("",-1)],
-                2 : [("",-1),("",-1),("",-1),("",-1)],
-                3 : [("",-1),("",-1),("",-1),("",-1)],
-                4 : [("",-1),("",-1),("",-1),("",-1)]
-            }
 
-    }
+    if 'google_token' in session:
+        plan = {
+            1 : {
+                    1 : [("",-1),("",-1),("",-1),("",-1)],
+                    2 : [("",-1),("",-1),("",-1),("",-1)],
+                    3 : [("",-1),("",-1),("",-1),("",-1)],
+                    4 : [("",-1),("",-1),("",-1),("",-1)]
+                },
+            2 : {
+                    1 : [("",-1),("",-1),("",-1),("",-1)],
+                    2 : [("",-1),("",-1),("",-1),("",-1)],
+                    3 : [("",-1),("",-1),("",-1),("",-1)],
+                    4 : [("",-1),("",-1),("",-1),("",-1)]
+                },
+            3 : {
+                    1 : [("",-1),("",-1),("",-1),("",-1)],
+                    2 : [("",-1),("",-1),("",-1),("",-1)],
+                    3 : [("",-1),("",-1),("",-1),("",-1)],
+                    4 : [("",-1),("",-1),("",-1),("",-1)]
+                },
+            4 : {
+                    1 : [("",-1),("",-1),("",-1),("",-1)],
+                    2 : [("",-1),("",-1),("",-1),("",-1)],
+                    3 : [("",-1),("",-1),("",-1),("",-1)],
+                    4 : [("",-1),("",-1),("",-1),("",-1)]
+                }
 
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    return render_template('index.html', plan=plan)
+        }
+
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        return render_template('index.html', plan=plan)
+    return redirect(url_for('login'))
 
 @app.route('/save', methods=['POST'])
 def save():
@@ -149,6 +114,25 @@ def save():
         flash("Your 4 year plan has been successfully saved", 'success')
     #returning to login page
     return redirect(url_for('main'));
+
+
+@app.route('/login/authorized')
+def authorized():
+    resp = google.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['google_token'] = (resp['access_token'], '')
+    me = google.get('userinfo')
+    return redirect(url_for("main"))
+    #return jsonify({"data": me.data})
+
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
 
 
 

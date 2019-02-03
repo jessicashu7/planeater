@@ -22,13 +22,12 @@
 
     <title> Planeater </title>
   </head>
-  <!-- Flashes the corresponding alert -->
-
 
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Planeater</a>
+      <h2 class="navbar-brand">Planeater    <a href = "#" style = "color: gray"> ? </a> </h2>
+
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -40,16 +39,13 @@
             <button class="btn btn-light nav-link" form="fouryearplanform" type="submit" href= "{{url_for('save')}}">Save<span class="sr-only">(current)</span></button>
           </li>
 
-          <li>
-              <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              <!--If sign in is completed, display photo -->
+          <li class="nav-item active" style ="float:right">
+              <a href= "{{url_for('logout')}}" onclick = "signOut()"> <button class="btn btn-light nav-link" style ="color: black"> Logout  </button> </a>
           </li>
-          <li>
-              <a href = "#" onclick ="GoogleAuth.signOut()">
-                  <img id = "pic" class = "rounded-circle" width ="35" height = "35"  > </img>
-                  <!-- Implement the google drop down menu to sign out and login as other user -->
-              </a>
 
+
+          <li>
+              <img src = "{{picture}}" id = "pic" display = "block" class = "rounded-circle" width ="35" height = "35"  ></img>
           </li>
 
         </ul>

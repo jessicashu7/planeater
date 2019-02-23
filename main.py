@@ -4,15 +4,51 @@ from flask_login import login_user, logout_user, current_user, login_required, L
 from flask_dance.contrib.google import google
 from flask_oauthlib.client import OAuth
 from auth import OAuthSignIn
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+import json
+import secret
+import copy
 
+# Use a service account
+cred = credentials.Certificate('planeater-ad76f9668f15.json')
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 app = Flask(__name__)
 app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
-app.config['GOOGLE_ID'] = "220365352452-1s6a4kaklt0hop8fnjfti0ojfl9hqgr5.apps.googleusercontent.com"
-app.config['GOOGLE_SECRET'] = "zXmfJl0CljOg-zEew41bLKi2" #currently Brian's test google project
+app.config['GOOGLE_ID'] = secret.client_id
+app.config['GOOGLE_SECRET'] = secret.secret_key
 oauth = OAuth(app)
 
-
+empty_plan = {
+    1 : {
+            1 : [("",-1),("",-1),("",-1),("",-1)],
+            2 : [("",-1),("",-1),("",-1),("",-1)],
+            3 : [("",-1),("",-1),("",-1),("",-1)],
+            4 : [("",-1),("",-1),("",-1),("",-1)]
+        },
+    2 : {
+            1 : [("",-1),("",-1),("",-1),("",-1)],
+            2 : [("",-1),("",-1),("",-1),("",-1)],
+            3 : [("",-1),("",-1),("",-1),("",-1)],
+            4 : [("",-1),("",-1),("",-1),("",-1)]
+        },
+    3 : {
+            1 : [("",-1),("",-1),("",-1),("",-1)],
+            2 : [("",-1),("",-1),("",-1),("",-1)],
+            3 : [("",-1),("",-1),("",-1),("",-1)],
+            4 : [("",-1),("",-1),("",-1),("",-1)]
+        },
+    4 : {
+            1 : [("",-1),("",-1),("",-1),("",-1)],
+            2 : [("",-1),("",-1),("",-1),("",-1)],
+            3 : [("",-1),("",-1),("",-1),("",-1)],
+            4 : [("",-1),("",-1),("",-1),("",-1)]
+        }
+}
 
 
 google_auth = oauth.remote_app(
@@ -52,67 +88,48 @@ def main():
     #quarter (represented in 0-3) to list of tuples of name, units
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are default values for name, units
+
     if 'google_token' in session:
-        plan = {
-            1 : {
-                    1 : [("",-1),("",-1),("",-1),("",-1)],
-                    2 : [("",-1),("",-1),("",-1),("",-1)],
-                    3 : [("",-1),("",-1),("",-1),("",-1)],
-                    4 : [("",-1),("",-1),("",-1),("",-1)]
-                },
-            2 : {
-                    1 : [("",-1),("",-1),("",-1),("",-1)],
-                    2 : [("",-1),("",-1),("",-1),("",-1)],
-                    3 : [("",-1),("",-1),("",-1),("",-1)],
-                    4 : [("",-1),("",-1),("",-1),("",-1)]
-                },
-            3 : {
-                    1 : [("",-1),("",-1),("",-1),("",-1)],
-                    2 : [("",-1),("",-1),("",-1),("",-1)],
-                    3 : [("",-1),("",-1),("",-1),("",-1)],
-                    4 : [("",-1),("",-1),("",-1),("",-1)]
-                },
-            4 : {
-                    1 : [("",-1),("",-1),("",-1),("",-1)],
-                    2 : [("",-1),("",-1),("",-1),("",-1)],
-                    3 : [("",-1),("",-1),("",-1),("",-1)],
-                    4 : [("",-1),("",-1),("",-1),("",-1)]
-                }
-
-        }
-        #
-        # conn = mysql.connect()
-        # cursor = conn.cursor()
-
+        plan_doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
+        plan_dict = plan_doc_ref.get().to_dict()
+        if plan_dict == None:
+            plan = copy.deepcopy(empty_plan)
+        else:
+            plan = json.loads(plan_dict['plan'])
         user_picture = get_user_data()["picture"] #link to your profile picture
+        #if no user picture must have error checking
         return render_template('index.html', plan=plan, picture = user_picture)
     return redirect(url_for('login'))
 
 @app.route('/save', methods=['POST'])
 def save():
+
+
     #need an if here checking if the person is logged in or not to the webpage
     #if yes, proceed to database, else prompt them to login first
-    #saving data to database here
-    # conn = mysql.connect()
-    # cursor = conn.cursor()
+    #saving data to database
     years = [1,2,3,4]
     quarters = [1, 2, 3, 4]
     classes = [1,2,3,4]
+
+    plan = copy.deepcopy(empty_plan)
+
     for y in years:
         for q in quarters:
             for c in classes:
                 name = request.form[str(y) + "_" + str(q) + "_" + str(c)]
                 units = request.form[str(y) + "_" + str(q) + "_" + str(c) + "_units"]
                 if name != "" or units !="": #if both fields blank, no need to insert in database
-                    #format statement puts in name and units (NULL if nothing entered in field)
-                    # name = (("'{}'".format(name)) if name != "" else "NULL")
-                    # units = (float(units) if units != "" else "NULL")
-                    # statement = "INSERT INTO inputclass VALUES (1, {}, {}, {}, {}, {}) ON DUPLICATE KEY UPDATE name={}, units={};".format(y,q, c, name, units, name, units)
-                    # cursor.execute(statement)
-                    # conn.commit()
-                    pass
+                    plan[y][q][c-1] = (name if name != "" else "", float(units) if units != "" else -1)
+
     else:
         flash("Your 4 year plan has been successfully saved", 'success')
+
+    doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
+    doc_ref.set({
+            u'plan': json.dumps(plan)
+    })
+
     return redirect(url_for('main'));
 
 
@@ -134,6 +151,9 @@ def get_google_oauth_token():
 
 def get_user_data():
     user_data =  google_auth.get('userinfo')
+    for x in user_data.data.items():
+        print(x)
+
     return user_data.data #this is a dictionary of user_data
 
 

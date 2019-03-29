@@ -25,6 +25,8 @@
 
 
   <body>
+
+    {%if logged_in%}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <h2 class="navbar-brand">Planeater    <a href = "#" style = "color: gray"> ? </a> </h2>
 
@@ -36,7 +38,7 @@
 
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active" style ="float:right">
-            <button class="btn btn-light nav-link" form="fouryearplanform" type="submit" href= "{{url_for('save')}}">Save<span class="sr-only">(current)</span></button>
+            <button class="btn btn-light nav-link" form="fouryearplanform" input type ="submit" formaction = "{{url_for('save')}}">Save<span class="sr-only">(current)</span></button>
           </li>
 
           <li class="nav-item active" style ="float:right">
@@ -52,6 +54,27 @@
 
       </div>
     </nav>
+    {%elif logged_in == False%}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <h2 class="navbar-brand">Planeater    <a href = "#" style = "color: gray"> ? </a> </h2>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active" style ="float:right">
+            <button class="btn btn-light nav-link" form="fouryearplanform" input type = "submit" formaction = "{{url_for('save')}}">Save<span class="sr-only">(current)</span></button>
+          </li>
+            <!--<form action = "{{url_for("login")}}" -->
+            <li class="nav-item active" style ="float:right">
+              <button class="btn btn-light nav-link" form = "fouryearplanform" input type = "submit"formaction = "{{url_for('login')}}">Sign In<span class="sr-only">(current)</span></button>
+          </li>
+          <!--</form>-->
+        </ul>
+      </div>
+    </nav>
+
+    {%endif %}
 
     {%with messages = get_flashed_messages(with_categories= True)%}
       {%if messages%}
@@ -65,43 +88,44 @@
         {%endfor%}
       {%endif%}
     {%endwith%}
-    <form id="fouryearplanform" class="container-fluid"  method="post" action="{{ url_for('save') }}">
-      <p id="total_units" class = "float-right"> Total Units: 0</p>
-      <!-- YEAR -->
-      <!-- temporary until database is implemented -->
-      <!-- Need to loop classes, as can have more than 4 classes -->
-      {% for year, quarters in plan|dictsort %}
-        <div class = "row mt-3" >
-          <h4 class="col">Year {{ year }}</h4>
-          <h4 class="col"></h4>
-        </div>
 
-        <div class="row border mx-1 my-1">
-          {% for quarter, classes in quarters|dictsort %}
-            <div class="col-sm-6 col-md-3" style="background-color:white">
-              {% if quarter == 1 %}
-                {% set quarterName = 'Fall' %}
-              {% elif quarter == 2 %}
-                {% set quarterName = 'Winter' %}
-              {% elif quarter == 3 %}
-                {% set quarterName = 'Spring' %}
-              {% else %}
-                {% set quarterName = 'Summer' %}
-              {% endif %}
-              <h6>{{ quarterName }}</h6>
+      <form id="fouryearplanform" class="container-fluid"  method="post">
+        <p id="total_units" class = "float-right"> Total Units: 0</p>
+        <!-- YEAR -->
+        <!-- temporary until database is implemented -->
+        <!-- Need to loop classes, as can have more than 4 classes -->
+        {% for year, quarters in plan|dictsort %}
+          <div class = "row mt-3" >
+            <h4 class="col">Year {{ year }}</h4>
+            <h4 class="col"></h4>
+          </div>
 
-              {% for name, units in classes %}
-              <div class="input-group mb-1">
-                <input name="{{ year|string + '_' + quarter|string + '_' + loop.index|string }}" type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" value="{% if name != "" %}{{name}}{% endif %}">
-                <input name="{{ year|string + '_' + quarter|string + '_' + loop.index|string + '_units' }}" type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)" value="{% if units != -1 %}{{units}}{% endif %}">
+          <div class="row border mx-1 my-1">
+            {% for quarter, classes in quarters|dictsort %}
+              <div class="col-sm-6 col-md-3" style="background-color:white">
+                {% if quarter == 1 %}
+                  {% set quarterName = 'Fall' %}
+                {% elif quarter == 2 %}
+                  {% set quarterName = 'Winter' %}
+                {% elif quarter == 3 %}
+                  {% set quarterName = 'Spring' %}
+                {% else %}
+                  {% set quarterName = 'Summer' %}
+                {% endif %}
+                <h6>{{ quarterName }}</h6>
+
+                {% for name, units in classes %}
+                <div class="input-group mb-1">
+                  <input name="{{ year|string + '_' + quarter|string + '_' + loop.index|string }}" type="text" class="form-control form-control-sm w-75 pr-1" placeholder="class" value="{% if name != "" %}{{name}}{% endif %}">
+                  <input name="{{ year|string + '_' + quarter|string + '_' + loop.index|string + '_units' }}" type="number" min="0" max="8" step="0.1" class="units form-control form-control-sm w-25" placeholder="units" oninput="check_units(this)" value="{% if units != -1 %}{{units}}{% endif %}">
+                </div>
+                {% endfor %}
+                <div class="total_quarter_units float-right"> Total Units: 0 </div>
+
               </div>
-              {% endfor %}
-              <div class="total_quarter_units float-right"> Total Units: 0 </div>
-
-            </div>
-          {% endfor %}
-        </div>
-      {% endfor %}
+            {% endfor %}
+          </div>
+        {% endfor %}
 
     </form>
   </body>

@@ -22,7 +22,6 @@ app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after
 app.config['GOOGLE_ID'] = secret.client_id
 app.config['GOOGLE_SECRET'] = secret.secret_key
 oauth = OAuth(app)
-
 empty_plan = {
     1 : {
             1 : [("",-1),("",-1),("",-1),("",-1)],
@@ -49,7 +48,7 @@ empty_plan = {
             4 : [("",-1),("",-1),("",-1),("",-1)]
         }
 }
-
+session['plan'] = None; 
 
 google_auth = oauth.remote_app(
     'google',
@@ -117,7 +116,7 @@ def main():
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
 
-        if(session['plan'] != empty_plan and plan == empty_plan):
+        if(session['plan'] != None and plan == empty_plan):
             return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True)
         else:
             return render_template('index.html', plan=plan, picture = user_picture, logged_in = True)

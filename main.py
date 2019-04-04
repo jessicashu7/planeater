@@ -49,7 +49,6 @@ empty_plan = {
             4 : [("",-1),("",-1),("",-1),("",-1)]
         }
 }
-temp_plan = copy.deepcopy(empty_plan)
 
 
 google_auth = oauth.remote_app(
@@ -84,19 +83,17 @@ def update_user_plan():
     return user_plan
 
 
-@app.route('/login', methods= ['GET','POST'] )
+@app.route('/login', methods= ['GET','POST'], )
 def login():
-    global temp_plan
-    temp_plan = update_user_plan()
-
-    #plan = update_user_plan()
+    session['plan']  = update_user_plan()
     return google_auth.authorize(callback=url_for('authorized', _external=True), prompt = "consent")
+
 
 
 @app.route('/logout', methods = [ "GET", 'POST'])
 def logout():
     session.clear()
-    global temp_plan
+    #global temp_plan
     temp_plan = copy.deepcopy(empty_plan)
     return redirect(url_for("main"))
 
@@ -109,19 +106,24 @@ def main():
     #quarter (represented in 0-3) to list of tuples of name, units
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are # values for name, units
-    global temp_plan
+    #global temp_plan
     if 'google_token' in session:
         plan_doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
         plan_dict = plan_doc_ref.get().to_dict()
         if plan_dict == None:
-            plan = copy.deepcopy(temp_plan)
+            plan = copy.deepcopy(empty_plan)
         else:
             plan = json.loads(plan_dict['plan'])
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
 
-        return render_template('index.html', plan=plan, picture = user_picture, logged_in = True)
-    return render_template('index.html', plan=temp_plan, picture = None, logged_in = False)
+        if(session['plan'] != empty_plan and plan == empty_plan):
+            return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True)
+        else:
+            return render_template('index.html', plan=plan, picture = user_picture, logged_in = True)
+    else:
+        return render_template('index.html', plan=session['plan'], picture = None, logged_in = False) #for loading same plan when save fails b/c not signed in
+
 
 @app.route('/save', methods=['POST', 'GET '])
 def save():
@@ -131,18 +133,14 @@ def save():
 
     if 'google_token' in session:
         plan = update_user_plan()
-
-
         flash("Your 4 year plan has been successfully saved", 'success')
-
         doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
         doc_ref.set({
                 u'plan': json.dumps(plan)
         })
         return redirect(url_for('main'));
     else:
-        global temp_plan
-        temp_plan = update_user_plan()
+        session['plan'] = update_user_plan()
         flash("Please login in to save!", 'warning')
         return redirect(url_for('main'))
 
@@ -157,6 +155,7 @@ def authorized():
             request.args['error_description']
         )
     session['google_token'] = (resp['access_token'], '')
+    #print(session['plan'])
     return redirect(url_for("main"))
 
 

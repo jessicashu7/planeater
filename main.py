@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash, request,session, jsonify
+from flask import Flask, render_template, url_for, redirect, flash, request,session, jsonify, g
 from functools import wraps
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_dance.contrib.google import google
@@ -48,7 +48,6 @@ empty_plan = {
             4 : [("",-1),("",-1),("",-1),("",-1)]
         }
 }
-session['plan'] = None; 
 
 google_auth = oauth.remote_app(
     'google',
@@ -78,13 +77,12 @@ def update_user_plan():
                 units = request.form[str(y) + "_" + str(q) + "_" + str(c) + "_units"]
                 if name != "" or units !="":
                     user_plan[y][q][c-1] = (name if name != "" else "", float(units) if units != "" else -1)
-
     return user_plan
 
 
 @app.route('/login', methods= ['GET','POST'], )
 def login():
-    session['plan']  = update_user_plan()
+    session['plan'] = update_user_plan()
     return google_auth.authorize(callback=url_for('authorized', _external=True), prompt = "consent")
 
 
@@ -92,8 +90,7 @@ def login():
 @app.route('/logout', methods = [ "GET", 'POST'])
 def logout():
     session.clear()
-    #global temp_plan
-    temp_plan = copy.deepcopy(empty_plan)
+    session['plan'] = copy.deepcopy(empty_plan)
     return redirect(url_for("main"))
 
 
@@ -105,8 +102,12 @@ def main():
     #quarter (represented in 0-3) to list of tuples of name, units
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are # values for name, units
-    #global temp_plan
+    if session.get('plan',None) is None  :
+        session['plan'] = copy.deepcopy(empty_plan);
+
     if 'google_token' in session:
+        if session.get('plan',None) is None  :
+            session['plan'] = copy.deepcopy(empty_plan);
         plan_doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
         plan_dict = plan_doc_ref.get().to_dict()
         if plan_dict == None:
@@ -115,12 +116,12 @@ def main():
             plan = json.loads(plan_dict['plan'])
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
-
-        if(session['plan'] != None and plan == empty_plan):
+        if( session.get('plan',None) !=None  and plan == empty_plan):
             return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True)
         else:
             return render_template('index.html', plan=plan, picture = user_picture, logged_in = True)
     else:
+
         return render_template('index.html', plan=session['plan'], picture = None, logged_in = False) #for loading same plan when save fails b/c not signed in
 
 
@@ -129,7 +130,6 @@ def save():
     #need an if here checking if the person is logged in or not to the webpage
     #if yes, proceed to database, else prompt them to login first
     #saving data to database
-
     if 'google_token' in session:
         plan = update_user_plan()
         flash("Your 4 year plan has been successfully saved", 'success')
@@ -170,4 +170,4 @@ def get_user_data():
 
 
 if __name__ == "__main__":
-    app.run(debug = True) #Set debug = False in a production environment
+    app.run(debug = True, threaded = True) #Set debug = False in a production environment

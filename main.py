@@ -63,6 +63,22 @@ google_auth = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
+def retrieve_source():
+    source = []
+    doc_ref = db.collection('courselist')
+    docs = doc_ref.get()
+    for doc in docs:
+        d = doc.to_dict()
+        dstring = u'{}: {}'.format(doc.id,d)
+        print(dstring)
+        print()
+        source.append(d)
+    for s in source:
+        print(s)
+    return source
+
+source = retrieve_source()
+
 @app.route('/update', methods=['POST'])
 def update_user_plan():
 
@@ -117,12 +133,12 @@ def main():
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
         if( session.get('plan',None) !=None  and plan == empty_plan):
-            return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True)
+            return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True, source = source)
         else:
-            return render_template('index.html', plan=plan, picture = user_picture, logged_in = True)
+            return render_template('index.html', plan=plan, picture = user_picture, logged_in = True, source = source)
     else:
 
-        return render_template('index.html', plan=session['plan'], picture = None, logged_in = False) #for loading same plan when save fails b/c not signed in
+        return render_template('index.html', plan=session['plan'], picture = None, logged_in = False, source = source) #for loading same plan when save fails b/c not signed in
 
 
 @app.route('/save', methods=['POST', 'GET '])

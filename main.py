@@ -9,7 +9,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import json
 import secret
-import copy
+import os
 
 # Use a service account
 cred = credentials.Certificate('planeater-ad76f9668f15.json')
@@ -18,7 +18,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 app = Flask(__name__)
-app.config['SECRET_KEY']= 'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
+app.config['SECRET_KEY']=  os.urandom(16) #'hf9789fdfasd234567jhgdjkjfasd' #won't need this after implmenting google
 app.config['GOOGLE_ID'] = secret.client_id
 app.config['GOOGLE_SECRET'] = secret.secret_key
 oauth = OAuth(app)
@@ -108,7 +108,7 @@ def update_user_plan():
                 name = request.form[str(y) + "_" + str(q) + "_" + str(c)]
                 units = request.form[str(y) + "_" + str(q) + "_" + str(c) + "_units"]
                 if name != "" or units !="":
-                    user_plan[y][q][c-1] = (name if name != "" else "", float(units) if units != "" else -1)
+                    user_plan[y][str(q)][c-1] = (name if name != "" else "", float(units) if units != "" else -1)
     return user_plan
 
 

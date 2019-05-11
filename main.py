@@ -49,6 +49,22 @@ empty_plan = {
         }
 }
 
+def new_empty_plan():
+    plan = dict()
+    years = 4
+    quarters = 4
+    classes = 4
+    for y in range(1, years + 1):
+        year = dict()
+        for q in range(1, quarters + 1):
+            quarter = []
+            for c in range(classes):
+                quarter.append(("",-1))
+            year[str(q)] = quarter
+        plan[y] = year
+    return plan
+
+
 google_auth = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -70,11 +86,11 @@ def retrieve_source():
     for doc in docs:
         d = doc.to_dict()
         dstring = u'{}: {}'.format(doc.id,d)
-        print(dstring)
-        print()
+        #print(dstring)
+        #print()
         source.append(d)
-    for s in source:
-        print(s)
+    #for s in source:
+    #    print(s)
     return source
 
 source = retrieve_source()
@@ -82,7 +98,7 @@ source = retrieve_source()
 @app.route('/update', methods=['POST'])
 def update_user_plan():
 
-    user_plan = copy.deepcopy(empty_plan)
+    user_plan = new_empty_plan()
     years = [1,2,3,4]
     quarters = [1, 2, 3, 4]
     classes = [1,2,3,4]
@@ -106,7 +122,7 @@ def login():
 @app.route('/logout', methods = [ "GET", 'POST'])
 def logout():
     session.clear()
-    session['plan'] = copy.deepcopy(empty_plan)
+    session['plan'] = new_empty_plan()
     return redirect(url_for("main"))
 
 
@@ -118,27 +134,26 @@ def main():
     #quarter (represented in 0-3) to list of tuples of name, units
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are # values for name, units
-    if session.get('plan',None) is None  :
-        session['plan'] = copy.deepcopy(empty_plan);
 
     if 'google_token' in session:
-        if session.get('plan',None) is None  :
-            session['plan'] = copy.deepcopy(empty_plan);
         plan_doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
         plan_dict = plan_doc_ref.get().to_dict()
         if plan_dict == None:
-            plan = copy.deepcopy(empty_plan)
+            plan = new_empty_plan()
         else:
             plan = json.loads(plan_dict['plan'])
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
-        if( session.get('plan',None) !=None  and plan == empty_plan):
+        if( session.get('plan',None) !=None  and plan == new_empty_plan()): #if database is empty, and session is not empty, display session plan
+            print(session['plan'])
             return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True, source = source)
-        else:
+        else: #display database plan (or empty if no database)
             return render_template('index.html', plan=plan, picture = user_picture, logged_in = True, source = source)
     else:
-
-        return render_template('index.html', plan=session['plan'], picture = None, logged_in = False, source = source) #for loading same plan when save fails b/c not signed in
+        #print("empty plan not logged in")
+        if session.get('plan') is not None:
+            session.pop('plan')
+        return render_template('index.html', plan=new_empty_plan(), picture = None, logged_in = False, source = source) #for loading same plan when save fails b/c not signed in
 
 
 @app.route('/save', methods=['POST', 'GET '])

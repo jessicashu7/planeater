@@ -135,7 +135,7 @@ def main():
     # 0 is fall, 1 is winter, 2 is spring, 3 is summer
     # "" and -1 are # values for name, units
 
-    if 'google_token' in session:
+    if 'google_token' in session:# and 'email' in get_user_data():
         plan_doc_ref = db.collection(u'userplans').document(get_user_data()['email'])
         plan_dict = plan_doc_ref.get().to_dict()
         if plan_dict == None:
@@ -145,7 +145,7 @@ def main():
         user_picture = get_user_data()["picture"] #link to your profile picture
         #if no user picture must have error checking
         if( session.get('plan',None) !=None  and plan == new_empty_plan()): #if database is empty, and session is not empty, display session plan
-            print(session['plan'])
+            #print(session['plan'])
             return render_template('index.html', plan=session['plan'], picture = user_picture, logged_in = True, source = source)
         else: #display database plan (or empty if no database)
             return render_template('index.html', plan=plan, picture = user_picture, logged_in = True, source = source)
